@@ -90,9 +90,9 @@ func parseRequestLine(data []byte) (*RequestLine, int, error) {
 	first_line := string(data[:idx])
 	requestLine, err := requestLineFromString(first_line)
 	if err != nil {
-		return nil, idx - 1, err
+		return nil, 0, err
 	}
-	return requestLine, idx - 1, nil
+	return requestLine, idx + 2, nil
 }
 
 func requestLineFromString(s string) (*RequestLine, error) {
