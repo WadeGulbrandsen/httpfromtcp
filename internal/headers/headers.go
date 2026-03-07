@@ -29,17 +29,31 @@ func (h Headers) Parse(data []byte) (n int, done bool, err error) {
 	if !ok || strings.TrimRightFunc(fieldName, unicode.IsSpace) != fieldName {
 		return 0, false, fmt.Errorf("Invalid header format: %v", fieldLine)
 	}
-	fieldName = strings.ToLower(strings.TrimSpace(fieldName))
+	fieldName = strings.TrimSpace(fieldName)
 	if !validTokens(fieldName) {
 		return 0, false, fmt.Errorf("Invalid header token in field name: %v", fieldName)
 	}
 	fieldValue = strings.TrimSpace(fieldValue)
-	if current_value, ok := h[fieldName]; ok {
-		h[fieldName] = current_value + ", " + fieldValue
-	} else {
-		h[fieldName] = fieldValue
-	}
+	h.Set(fieldName, fieldValue)
 	return idx + 2, false, nil
+}
+
+func (h Headers) Get(key string) (string, bool) {
+	key = strings.ToLower(key)
+	v, ok := h[key]
+	return v, ok
+}
+
+func (h Headers) Set(key, value string) {
+	key = strings.ToLower(key)
+	v, ok := h[key]
+	if ok {
+		value = strings.Join([]string{
+			v,
+			value,
+		}, ", ")
+	}
+	h[key] = value
 }
 
 var tokenChars = []rune("!#$%&'*+-.^_`|~")
