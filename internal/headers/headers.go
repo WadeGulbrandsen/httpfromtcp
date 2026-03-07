@@ -34,7 +34,11 @@ func (h Headers) Parse(data []byte) (n int, done bool, err error) {
 		return 0, false, fmt.Errorf("Invalid header token in field name: %v", fieldName)
 	}
 	fieldValue = strings.TrimSpace(fieldValue)
-	h[fieldName] = fieldValue
+	if current_value, ok := h[fieldName]; ok {
+		h[fieldName] = current_value + ", " + fieldValue
+	} else {
+		h[fieldName] = fieldValue
+	}
 	return idx + 2, false, nil
 }
 
