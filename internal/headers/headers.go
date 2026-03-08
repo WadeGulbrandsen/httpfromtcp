@@ -61,6 +61,11 @@ func (h Headers) Override(key, value string) {
 	h[key] = value
 }
 
+func (h Headers) Del(key string) {
+	key = strings.ToLower(key)
+	delete(h, key)
+}
+
 var tokenChars = []rune("!#$%&'*+-.^_`|~")
 
 func validTokens(s string) bool {
